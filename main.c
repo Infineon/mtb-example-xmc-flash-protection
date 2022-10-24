@@ -101,8 +101,8 @@ uint8_t ucb_program_count = 0;
 * Function Name: initialize_shell
 ********************************************************************************
 * Summary:
-*  This function prompts useful information about the shell and supported
-*  commands.
+* This function prompts useful information about the shell and supported
+* commands.
 *
 * Parameters:
 *  none
@@ -130,7 +130,7 @@ void initialize_shell()
 * Function Name: help_cmd
 ********************************************************************************
 * Summary:
-*  This function displays all the commands supported by the shell
+* This function displays all the commands supported by the shell
 *
 * Parameters:
 *  int32_t argc - number of command strings
@@ -154,8 +154,8 @@ void help_cmd(int32_t argc, char **argv)
 * Function Name: flash_protection_install_cmd
 ********************************************************************************
 * Summary:
-*  This function installs global read protection on the flash. Refer
-*  XMC_FLASH_PROTECTION_t for other protection options.
+* This function installs global read protection on the flash. Refer
+* XMC_FLASH_PROTECTION_t for other protection options.
 *
 * Parameters:
 *  int32_t argc - number of command strings
@@ -223,9 +223,9 @@ void flash_protection_install_cmd(int32_t argc, char **argv)
 * Function Name: flash_protection_uninstall_cmd
 ********************************************************************************
 * Summary:
-*  This function uninstalls flash read protection. Note: For uninstalling flash
-*  write protection on the sectors, use XMC_FLASH_VerifyWriteProtection with
-*  appropriate sector protection mask.
+* This function uninstalls flash read protection. Note: For uninstalling flash
+* write protection on the sectors, use XMC_FLASH_VerifyWriteProtection with
+* appropriate sector protection mask.
 *
 * Parameters:
 *  int32_t argc - number of command strings
@@ -298,7 +298,7 @@ void flash_protection_uninstall_cmd(int32_t argc, char **argv)
 * Function Name: flash_protection_disable_cmd
 ********************************************************************************
 * Summary:
-*  This function disables flash protection temporarily
+* This function disables flash protection temporarily
 *
 * Parameters:
 *  int32_t argc - number of command strings
@@ -337,7 +337,7 @@ void flash_protection_disable_cmd(int32_t argc, char **argv)
 * Function Name: flash_protection_resume_cmd
 ********************************************************************************
 * Summary:
-*  This function resumes flash protection as it was configured before
+* This function resumes flash protection as it was configured before
 *
 * Parameters:
 *  int32_t argc - number of command strings
@@ -361,7 +361,7 @@ void flash_protection_resume_cmd(int32_t argc, char **argv)
 * Function Name: flash_ucb_program_count
 ********************************************************************************
 * Summary:
-*  This function programs the UCB program count into the flash sector 11
+* This function programs the UCB program count into the flash sector 8
 *
 * Parameters:
 *  uint32_t count - UCB programming count
@@ -375,18 +375,18 @@ void flash_ucb_program_count(uint32_t count)
     /* Data array */
     uint32_t data[XMC_FLASH_WORDS_PER_PAGE] = {count, 0};
 
-    /* Erase Flash Sector 11 */
-    XMC_FLASH_EraseSector(XMC_FLASH_SECTOR_11);
+    /* Erase Flash Sector 8 */
+    XMC_FLASH_EraseSector(XMC_FLASH_SECTOR_8);
 
-    /* Program Flash Sector 11 */
-    XMC_FLASH_ProgramPage(XMC_FLASH_SECTOR_11, data);
+    /* Program Flash Sector 8 */
+    XMC_FLASH_ProgramPage(XMC_FLASH_SECTOR_8, data);
 }
 
 /*******************************************************************************
 * Function Name: flash_get_ucb_program_count
 ********************************************************************************
 * Summary:
-*  This function retrieves the UCB program count into the flash sector 11
+* This function retrieves the UCB program count into the flash sector 8
 *
 * Parameters:
 *  none
@@ -397,8 +397,8 @@ void flash_ucb_program_count(uint32_t count)
 *******************************************************************************/
 uint32_t flash_get_ucb_program_count()
 {
-    /* Point to XMC_FLASH_SECTOR_11 flash address */
-    const uint32_t *address = XMC_FLASH_SECTOR_11;
+    /* Point to XMC_FLASH_SECTOR_8 flash address */
+    const uint32_t *address = XMC_FLASH_SECTOR_8;
 
     return *address;
 }
@@ -407,7 +407,7 @@ uint32_t flash_get_ucb_program_count()
 * Function Name: flash_protection_status_cmd
 ********************************************************************************
 * Summary:
-*  This function displays the flash protection status
+* This function displays the flash protection status
 *
 * Parameters:
 *  int32_t argc - number of command strings
@@ -448,13 +448,13 @@ void flash_protection_status_cmd(int32_t argc, char **argv)
 * Function Name: main
 ********************************************************************************
 * Summary:
-*  This is the main function. It initializes the shell and processes the user
-*  input for demonstrating flash protection options like:
-*   1. Installing Flash Protection
-*   2. Uninstalling Flash Protection
-*   3. Disabling Flash Protection
-*   4. Resuming Flash Protection
-*   5. Checking Flash Protection Status
+* This is the main function. It initializes the shell and processes the user
+* input for demonstrating flash protection options like:
+*  1. Installing Flash Protection
+*  2. Uninstalling Flash Protection
+*  3. Disabling Flash Protection
+*  4. Resuming Flash Protection
+*  5. Checking Flash Protection Status
 *
 * Parameters:
 *  none

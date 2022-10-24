@@ -88,7 +88,7 @@ static char shell_cmdline[SHELL_CMDLINE_SIZE];
 * Function Name: shell_print
 ********************************************************************************
 * Summary:
-*  Print the string to the serial terminal
+* Print the string to the serial terminal
 *
 * Parameters:
 *  const char *format - String to be printed
@@ -104,15 +104,18 @@ void shell_print(const char *format, ... )
 
     va_start(ap, format);
     vprintf(format, ap);
-    /* Add new line.*/
+
+    /* Add new line */
     printf("\r\n");
+
+    va_end(ap);
 }
 
 /*******************************************************************************
 * Function Name: shell_make_argv
 ********************************************************************************
 * Summary:
-*  Returns the number of arguments
+* Returns the number of arguments
 *
 * Parameters:
 *  char *cmdline - shell input string
@@ -148,7 +151,8 @@ static int32_t shell_make_argv(char *cmdline, char *argv[])
                         argc++;
                     }
                 }
-                else /* Return argc.*/
+                /* Return argc.*/
+                else
                 {
                     break;
                 }
@@ -165,7 +169,7 @@ static int32_t shell_make_argv(char *cmdline, char *argv[])
 * Function Name: shell_process_input
 ********************************************************************************
 * Summary:
-*  Processes the user input and calls the respective functions
+* Processes the user input and calls the respective functions
 *
 * Parameters:
 *  None
@@ -194,7 +198,7 @@ void shell_process_input(void)
             ch = getchar();
             if (ch != EOF)
             {
-                if (((char)ch != SHELL_LF) && (shell_cmdline_pos < SHELL_CMDLINE_SIZE))
+                if (((char)ch != SHELL_LF) && ((shell_cmdline_pos + 1) < SHELL_CMDLINE_SIZE))
                 {
                     switch(ch)
                     {
@@ -244,7 +248,8 @@ void shell_process_input(void)
             const shell_cmd_t *cur_command = shell_cmd_table;
             while (cur_command->name)
             {
-                if (strcasecmp(cur_command->name, argv[0]) == 0) /* Command is found. */
+                /* Command is found. */
+                if (strcasecmp(cur_command->name, argv[0]) == 0)
                 {
                     if (((argc - 1) >= cur_command->min_args) && ((argc - 1) <= cur_command->max_args))
                     {
@@ -253,7 +258,8 @@ void shell_process_input(void)
                             ((void(*)(int32_t cmd_ptr_argc, char **cmd_ptr_argv))(cur_command->function))(argc, argv);
                         }
                     }
-                    else /* Wrong command syntax. */
+                    /* Wrong command syntax. */
+                    else
                     {
                         shell_print(SHELL_ERR_SYNTAX, argv[0]);
                     }
@@ -288,7 +294,7 @@ void shell_process_input(void)
 * Function Name: shell_help
 ********************************************************************************
 * Summary:
-*  Displays all the commands and their descriptions supported by the shell
+* Displays all the commands and their descriptions supported by the shell
 *
 * Parameters:
 *  None
@@ -314,8 +320,8 @@ void shell_help(void)
 * Function Name: shell_init
 ********************************************************************************
 * Summary:
-*  Initializes the shell with the supported command table and calls provided
-*  function.
+* Initializes the shell with the supported command table and calls provided
+* function.
 *
 * Parameters:
 *  const shell_cmd_t *const cmd_table - Pointer to command table structure
@@ -337,4 +343,4 @@ void shell_init(const shell_cmd_t *const cmd_table, void (*init)(void))
     init();
 }
 
-
+/* [] END OF FILE */

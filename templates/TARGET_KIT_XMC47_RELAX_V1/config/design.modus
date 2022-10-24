@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Design version="12" xmlns="http://cypress.com/xsd/cydesignfile_v3">
-    <ToolInfo version="2.3.0.3685"/>
+<Configuration app="BACKEND" formatVersion="13" lastSavedWith="Configurator Backend" lastSavedWithVersion="3.0.0" toolsPackage="ModusToolbox 3.0.0" xmlns="http://cypress.com/xsd/cydesignfile_v4">
     <Devices>
         <Device mpn="XMC4700-F144x2048">
             <BlockConfig>
@@ -169,7 +168,7 @@
                 <Block location="scu[0].clock[0].osc_hp[0]">
                     <Personality template="xmc4_oschp" version="1.0">
                         <Param id="mode" value="XMC_SCU_CLOCK_OSCHP_MODE_OSC"/>
-                        <Param id="ext_frequency" value="12"/>
+                        <Param id="ext_frequency" value="12.000"/>
                     </Personality>
                 </Block>
                 <Block location="scu[0].clock[0].osc_si[0]">
@@ -213,12 +212,15 @@
                         <Param id="configuration" value="auto"/>
                         <Param id="Oversampling" value="16"/>
                         <Param id="BaudRate" value="115200"/>
+                        <Param id="SamplePoint" value="8"/>
                         <Param id="DataBits" value="8"/>
                         <Param id="FrameLength" value="8"/>
                         <Param id="StopBits" value="1"/>
                         <Param id="ParityMode" value="XMC_USIC_CH_PARITY_MODE_NONE"/>
-                        <Param id="TxFIFOSize" value="XMC_USIC_CH_FIFO_DISABLED"/>
                         <Param id="RxFIFOSize" value="XMC_USIC_CH_FIFO_DISABLED"/>
+                        <Param id="RxFIFOPointer" value="0"/>
+                        <Param id="TxFIFOSize" value="XMC_USIC_CH_FIFO_DISABLED"/>
+                        <Param id="TxFIFOPointer" value="0"/>
                         <Param id="HwTransferGatingEnabled" value="false"/>
                         <Param id="HwTransferGatingLogic" value="XMC_USIC_CH_START_TRANSMISION_ON_TDV_DX2S_0"/>
                         <Param id="HwTransferTriggerEnabled" value="false"/>
@@ -267,4 +269,4 @@
         </Device>
     </Devices>
     <ConfiguratorData/>
-</Design>
+</Configuration>
