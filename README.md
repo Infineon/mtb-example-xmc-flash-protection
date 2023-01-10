@@ -19,7 +19,13 @@ This example demonstrates how flash protection can be configured in the XMC™ 4
 
 ## Supported kits (make variable 'TARGET')
 
+- [XMC4200 Platform2Go kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc_plt2go_xmc4200/) (`TARGET_KIT_XMC_PLT2GO_XMC4200`)
+- [XMC4300 relax EtherCAT kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc43_relax_ecat_v1/) (`TARGET_KIT_XMC43_RELAX_ECAT_V1`)
+- [XMC4400 Platform2Go kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc_plt2go_xmc4400/) (`TARGET_KIT_XMC_PLT2GO_XMC4400`)
+- [XMC4500 relax kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc45_relax_v1/) (`TARGET_KIT_XMC45_RELAX_V1`)
 - [XMC4700 relax kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc47_relax_v1/) (`KIT_XMC47_RELAX_V1`) - Default value of `TARGET`
+- [XMC4800 relax EtherCAT kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc48_relax_ecat_v1/) (`TARGET_KIT_XMC48_RELAX_ECAT_V1`)
+
 
 ## Hardware setup
 
@@ -101,6 +107,13 @@ The following example will clone the [Flash protection](https://github.com/Infin
 ## Operation
 
 1. Connect the board to your PC using a micro-USB cable through the debug USB connector.
+
+   **Note:** XMC4500 relax kit does not enumerate as a virtual COM port. You need to make the connections externally using a USB to Serial converter with the following connections:
+
+   Pin function  | Input/output | XMC&trade; MCU pin |
+   ------- | --------- | -----------------
+   Transmit pin for UART communication (PC_RX) | Output | P1.5 (U0C0.DOUT0)
+   Receive pin for UART communication (PC_TX) | Input |  P1.4 (U0C0.DX0B)
 
 2. Program the board using Eclipse IDE for ModusToolbox&trade; software:
 
@@ -273,6 +286,7 @@ Document title: *CE232719* - *XMC&trade; MCU: Flash protection*
  1.0.0   | New code example
  1.1.0   | Added support for new kits
  2.0.0   | Updated to support ModusToolbox™ software v3.0; CE will not be backward compatible with previous versions of ModusToolbox™ software
+ 2.1.0   | Added support for new kits
 ------
 
 All other trademarks or registered trademarks referenced herein are the property of their respective owners.
