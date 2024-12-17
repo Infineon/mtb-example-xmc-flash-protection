@@ -10,7 +10,7 @@
  *
  ******************************************************************************
  *
- * Copyright (c) 2015-2021, Infineon Technologies AG
+ * Copyright (c) 2015-2024, Infineon Technologies AG
  * All rights reserved.
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
@@ -39,13 +39,16 @@
  *
  *****************************************************************************/
 
-#include "shell.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdarg.h>
-#include "retarget_io.h"
+#include "shell.h"
+#include "cy_retarget_io.h"
+#include "ring_buffer.h"
+#include "cybsp.h"
 
 /*******************************************************************************
 * Macros
@@ -112,6 +115,30 @@ void shell_print(const char *format, ... )
 }
 
 /*******************************************************************************
+* Function Name: print_shell_prompt
+********************************************************************************
+* Summary:
+* Prints SHELL> on terminal.
+*
+* Parameters:
+*  None
+*
+* Return:
+*  None
+*
+*******************************************************************************/
+void print_shell_prompt(void)
+{
+    char prompt[] = SHELL_PROMPT;
+    uint8_t i;
+    
+    for (i=0;i<sizeof(prompt);i++)
+    {
+        XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,prompt[i]);
+    }
+}
+
+/*******************************************************************************
 * Function Name: shell_make_argv
 ********************************************************************************
 * Summary:
@@ -161,7 +188,6 @@ static int32_t shell_make_argv(char *cmdline, char *argv[])
 
         argv[argc] = 0;
     }
-
     return argc;
 }
 
@@ -180,112 +206,120 @@ static int32_t shell_make_argv(char *cmdline, char *argv[])
 *******************************************************************************/
 void shell_process_input(void)
 {
-    char *argv[SHELL_ARGS_MAX + 1u]; /* One extra for 0 terminator.*/
-    int32_t argc;
-    int32_t ch;
-
+  /* One extra for 0 terminator.*/
+  char *argv[SHELL_ARGS_MAX + 1u];
+  int32_t argc;
+  uint8_t buf;
     switch (shell_state)
     {
-    case SHELL_STATE_INIT:
-        printf("%s", SHELL_PROMPT);
-        shell_state = SHELL_STATE_GET_USER_INPUT;
-        break;
-
-    case SHELL_STATE_GET_USER_INPUT:
-
-        if (ring_buffer_avail(&serial_buffer) > 0)
+        case SHELL_STATE_INIT:
         {
-            ch = getchar();
-            if (ch != EOF)
+            print_shell_prompt();
+            shell_state = SHELL_STATE_GET_USER_INPUT;
+            break;
+        }
+        case SHELL_STATE_GET_USER_INPUT:
+        {
+            if (ring_buffer_avail(&serial_buffer) > 0)
             {
-                if (((char)ch != SHELL_LF) && ((shell_cmdline_pos + 1) < SHELL_CMDLINE_SIZE))
+                ring_buffer_get(&serial_buffer, &buf);
+                if (buf != 0x0D)
                 {
-                    switch(ch)
+                /* Check if
+                 * 1. enter was pressed or
+                 * 2. shell_cmdline buffer has only 1 character left, reserved for zero termination
+                 */
+                    if (((char)buf != SHELL_LF) && (shell_cmdline_pos < (SHELL_CMDLINE_SIZE - 1)))
                     {
-                    case SHELL_BACKSPACE:
-                    case SHELL_DELETE:
-                        if (shell_cmdline_pos > 0U)
+                        switch(buf)
                         {
-                            shell_cmdline_pos -= 1U;
-                            putchar(SHELL_BACKSPACE);
-                            putchar(' ');
-                            putchar(SHELL_BACKSPACE);
-                        }
-                        break;
-
-                    default:
-                        if ((shell_cmdline_pos + 1U) < SHELL_CMDLINE_SIZE)
-                        {
-                            /* Only printable characters. */
-                            if (((char)ch >= SHELL_SPACE) && ((char)ch <= SHELL_DELETE))
+                            case SHELL_BACKSPACE:
+                            case SHELL_DELETE:
                             {
-                                shell_cmdline[shell_cmdline_pos] = (char)ch;
-                                shell_cmdline_pos++;
-                                putchar((char)ch);
+                                if (shell_cmdline_pos > 0U)
+                                {
+                                  shell_cmdline_pos -= 1U;
+                                  XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,SHELL_BACKSPACE);
+                                  XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,' ');
+                                  XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,SHELL_BACKSPACE);
+                                }
+                                break;
+                            }
+                            default:
+                            {
+                                if ((shell_cmdline_pos + 1U) < SHELL_CMDLINE_SIZE)
+                                {
+                                  /* Only printable characters. */
+                                    if (((char)buf >= SHELL_SPACE) && ((char)buf <= SHELL_DELETE))
+                                    {
+                                        shell_cmdline[shell_cmdline_pos] = (char)buf;
+                                        shell_cmdline_pos++;
+                                        XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,(char)buf);
+                                    }
+                                }
+                                break;
                             }
                         }
-                        break;
                     }
                 }
                 else
                 {
+                    /* Append zero termination to command and start execution */
                     shell_cmdline[shell_cmdline_pos] = '\0';
-
-                    putchar(SHELL_CR);
-                    putchar(SHELL_LF);
-
+                    XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,SHELL_CR);
+                    XMC_UART_CH_Transmit(cy_retarget_io_uart_obj.channel,SHELL_LF);
                     shell_state = SHELL_STATE_EXEC_CMD;
                 }
             }
+            break;
         }
-        break;
-
-    case SHELL_STATE_EXEC_CMD:
-        argc = shell_make_argv(shell_cmdline, argv);
-
-        if (argc != 0)
+        case SHELL_STATE_EXEC_CMD:
         {
-            const shell_cmd_t *cur_command = shell_cmd_table;
-            while (cur_command->name)
+            argc = shell_make_argv(shell_cmdline, argv);
+
+            if (argc != 0)
             {
-                /* Command is found. */
-                if (strcasecmp(cur_command->name, argv[0]) == 0)
+                const shell_cmd_t *cur_command = shell_cmd_table;
+                while (cur_command->name)
                 {
-                    if (((argc - 1) >= cur_command->min_args) && ((argc - 1) <= cur_command->max_args))
+                    /* Command is found. */
+                    if (strcasecmp(cur_command->name, argv[0]) == 0)
                     {
-                        if (cur_command->function)
+                        if (((argc - 1) >= cur_command->min_args) && ((argc - 1) <= cur_command->max_args))
                         {
-                            ((void(*)(int32_t cmd_ptr_argc, char **cmd_ptr_argv))(cur_command->function))(argc, argv);
+                            if (cur_command->function)
+                            {
+                                ((void(*)(int32_t cmd_ptr_argc, char **cmd_ptr_argv))(cur_command->function))(argc, argv);
+                            }
                         }
+                        else
+                        {
+                            /* Wrong command syntax. */
+                            shell_print(SHELL_ERR_SYNTAX, argv[0]);
+                        }
+                        break;
                     }
-                    /* Wrong command syntax. */
-                    else
-                    {
-                        shell_print(SHELL_ERR_SYNTAX, argv[0]);
-                    }
-
-                    break;
+                    cur_command++;
                 }
-                cur_command++;
+                if (cur_command->name == 0)
+                {
+                    shell_print(SHELL_ERR_CMD, argv[0]);
+                }
             }
-
-            if (cur_command->name == 0)
-            {
-                shell_print(SHELL_ERR_CMD, argv[0]);
-            }
+            shell_state = SHELL_STATE_END_CMD;
+            break;
         }
 
-        shell_state = SHELL_STATE_END_CMD;
-        break;
+        case SHELL_STATE_END_CMD:
+        {
+            shell_state = SHELL_STATE_INIT;
+            shell_cmdline_pos = 0u;
+            shell_cmdline[0] = 0u;
+            break;
+        }
 
-    case SHELL_STATE_END_CMD:
-        shell_state = SHELL_STATE_INIT;
-        shell_cmdline_pos = 0u;
-        shell_cmdline[0] = 0u;
-        break;
-
-    default:
-        break;
+        default:
+            break;
 
     }
 }
@@ -333,14 +367,10 @@ void shell_help(void)
 *******************************************************************************/
 void shell_init(const shell_cmd_t *const cmd_table, void (*init)(void))
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
-
     shell_state = SHELL_STATE_INIT;
     shell_cmdline_pos = 0u;
     shell_cmdline[0] = 0u;
     shell_cmd_table = cmd_table;
-
     init();
 }
-
 /* [] END OF FILE */

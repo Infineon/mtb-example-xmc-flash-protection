@@ -10,7 +10,7 @@
 *
 ******************************************************************************
 *
-* Copyright (c) 2015-2021, Infineon Technologies AG
+* Copyright (c) 2015-2024, Infineon Technologies AG
 * All rights reserved.
 *
 * Boost Software License - Version 1.0 - August 17th, 2003
@@ -42,6 +42,8 @@
 #ifndef SHELL_H_
 #define SHELL_H_
 
+#include "ring_buffer.h"
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -58,6 +60,8 @@ typedef struct {
     char *description;                  /* Command description */
     char *syntax;                       /* Command Syntax */
 } shell_cmd_t;
+
+extern ring_buffer_t serial_buffer;
 
 /*******************************************************************************
 * Function prototypes
