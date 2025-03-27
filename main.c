@@ -83,7 +83,6 @@ void flash_protection_uninstall_cmd(int32_t argc, char **argv);
 void flash_protection_disable_cmd(int32_t argc, char **argv);
 void flash_protection_resume_cmd(int32_t argc, char **argv);
 void flash_protection_status_cmd(int32_t argc, char **argv);
-void flash_ucb_program_count();
 void flash_ucb_program_count(uint32_t count);
 
 /*******************************************************************************
@@ -294,7 +293,7 @@ void flash_protection_uninstall_cmd(int32_t argc, char **argv)
     if ((XMC_FLASH_GetStatus() & XMC_FLASH_STATUS_PROTECTION_INSTALLED) != 0)
     {
         /* Verify if read protection is installed using user0 pwd0 and pwd1 credentials.
-         * Calling this function temporarily disables flash protection as well 
+         * Calling this function temporarily disables flash protection as well
          */
         if (XMC_FLASH_VerifyReadProtection(strtol(argv[1], NULL, 16), strtol(argv[2], NULL, 16)))
         {
@@ -348,7 +347,7 @@ void flash_protection_disable_cmd(int32_t argc, char **argv)
     if ((XMC_FLASH_GetStatus() & XMC_FLASH_STATUS_PROTECTION_INSTALLED) != 0)
     {
         /* Verify if read protection is installed using user0 pwd0 and pwd1 credentials.
-         * Calling this function temporarily disables flash protection as well 
+         * Calling this function temporarily disables flash protection as well
          */
         if(XMC_FLASH_VerifyReadProtection(strtol(argv[1], NULL, 16), strtol(argv[2], NULL, 16)))
         {

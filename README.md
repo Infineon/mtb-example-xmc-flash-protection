@@ -6,7 +6,7 @@ This example demonstrates how flash protection can be configured in the XMC™ 4
 
 ## Requirements
 
-- [ModusToolbox&trade;](https://www.infineon.com/modustoolbox) v3.0 or later (tested with v3.3)
+- [ModusToolbox&trade;](https://www.infineon.com/modustoolbox) v3.0 or later (tested with v3.4)
 - [SEGGER J-Link software](https://www.segger.com/downloads/jlink/#J-LinkSoftwareAndDocumentationPack)
 - Programming language: C
 - Associated parts: [XMC&trade; 4000 series MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/) parts
@@ -117,11 +117,11 @@ For more details, see the [Visual Studio Code for ModusToolbox&trade; user guide
 </details>
 
 
-<details><summary><b>Keil µVision</b></summary>
+<details><summary><b>Arm&reg; Keil&reg; µVision&reg;</b></summary>
 
-Double-click the generated *{project-name}.cprj* file to launch the Keil µVision IDE.
+Double-click the generated *{project-name}.cprj* file to launch the Arm&reg; Keil&reg; µVision&reg; IDE.
 
-For more details, see the [Keil µVision for ModusToolbox&trade; user guide](https://www.infineon.com/MTBuVisionUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mt_uvision_user_guide.pdf*).
+For more details, see the [Arm&reg; Keil&reg; µVision&reg; for ModusToolbox&trade; user guide](https://www.infineon.com/MTBuVisionUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mt_uvision_user_guide.pdf*).
 
 </details>
 
@@ -159,7 +159,7 @@ For more details, see the [ModusToolbox&trade; tools package user guide](https:/
 
       2. In the **Quick Panel**, scroll down, and click **\<Application Name> Program (JLink)**.
    </details>
-   
+
    <details><summary><b>In other IDEs</b></summary>
 
    Follow the instructions in your preferred IDE.
@@ -363,11 +363,12 @@ Document title: *CE232719* - *XMC&trade; MCU: Flash protection*
  2.1.0   | Added support for new kits |
  2.1.1   | Updated README |
  2.2.0   | Updated code to use retarget-io-cat3 middleware for shell operations |
+ 2.2.1   | Removed a redundant function prototype |
 ------
 
 All other trademarks or registered trademarks referenced herein are the property of their respective owners.
 
-© 2024 Infineon Technologies AG
+© 2025 Infineon Technologies AG
 
 All Rights Reserved.
 
